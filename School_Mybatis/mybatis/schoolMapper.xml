@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.SchoolMapper">
+
+	<!-- person 등록 -->
+	<insert id="addPerson">
+		<selectKey keyProperty="seq_person" resultType="int" order="BEFORE">
+			select seq_school.nextval from dual		
+		</selectKey>
+		insert into person (
+			seq_person,
+			ssn,
+			name,
+			age,
+			type
+		) values (
+			#{seq_person},
+			#{ssn},
+			#{name},
+			#{age},
+			#{type}
+		)
+	</insert>
+
+	<!-- 학생 등록 -->
+
+	<insert id="addStudent">
+		<selectKey keyProperty="seq_student" resultType="int" order="BEFORE">
+			select seq_school.nextval from dual		
+		</selectKey>
+		insert into student (
+			seq_student,
+			seq_person,
+			stdno
+		) values (
+			#{seq_student},
+			#{seq_person},
+			#{stdno}
+		)
+	</insert>
+
+
+	<!-- 교사 등록 -->
+
+	<insert id="addTeacher">
+		<selectKey keyProperty="seq_teacher" resultType="int" order="BEFORE">
+			select seq_school.nextval from dual		
+		</selectKey>
+		insert into teacher (
+			seq_teacher,
+			seq_person,
+			major
+		) values (
+			#{seq_teacher},
+			#{seq_person},
+			#{major}
+		)
+	</insert>
+
+	<!-- 직원 등록 -->
+
+	<insert id="addStaff">
+		<selectKey keyProperty="seq_staff" resultType="int" order="BEFORE">
+			select seq_school.nextval from dual		
+		</selectKey>
+		insert into staff (
+			seq_staff,
+			seq_person,
+			dept
+		) values (
+			#{seq_staff},
+			#{seq_person},
+			#{dept}
+		)
+	</insert>
+
+	<!-- 주민등록번호로 Person 검색 -->
+
+	<select id="findPersonBySsn" resultType="person">
+		select * from person where ssn = #{ssn}
+	</select>
+
+	<!-- 학생 정보 가져오기 -->
+
+	<select id="findAllStudent" resultType="student">
+		select
+		p.seq_person,
+		p.name,
+		p.ssn,
+		p.age,
+		p.type,
+		s.seq_student,
+		s.stdno
+	from
+		person p,
+		student s
+	where
+		p.seq_person = s.seq_person
+		<if test="ssn != null">
+			and p.ssn = #{ssn}
+		</if>
+
+	</select>
+
+	<!-- 교사 정보 가져오기 -->
+
+	<select id="findAllTeacher" resultType="teacher">
+		
+	select
+		p.seq_person,
+		p.name,
+		p.ssn,
+		p.age,
+		p.type,
+		t.seq_teacher,
+		t.major
+	from
+		person p,
+		teacher t
+	where
+		p.seq_person = t.seq_person
+		
+	</select>
+
+	<!-- 직원 정보 가져오기 -->
+
+	<select id="findAllStaff" resultType="staff">
+		
+	select
+		p.seq_person,
+		p.name,
+		p.ssn,
+		p.age,
+		p.type,
+		s.seq_staff,
+		s.dept
+	from
+		person p,
+		staff s
+	where
+		p.seq_person = s.seq_person
+		
+	</select>
+
+	<!-- Ssn으로 교사 정보 가져오기 -->
+
+	<select id="findTeacher" resultType="teacher">
+		
+	select
+		p.seq_person,
+		p.name,
+		p.ssn,
+		p.age,
+		p.type,
+		t.seq_teacher,
+		t.major
+	from
+		person p,
+		teacher t
+	where
+		p.seq_person = t.seq_person
+		and p.ssn = #{ssn}
+		
+	</select>
+
+	<!-- Ssn으로 직원 정보 가져오기 -->
+
+	<select id="findStaff" resultType="staff">
+		
+	select
+		p.seq_person,
+		p.name,
+		p.ssn,
+		p.age,
+		p.type,
+		s.seq_staff,
+		s.dept
+	from
+		person p,
+		staff s
+	where
+		p.seq_person = s.seq_person
+		and p.ssn = #{ssn}
+		
+	</select>
+
+	<!-- ssn으로 학생 정보 가져오기 -->
+
+
+	<!-- 주민번호로 수정 -->
+
+	<update id="updatePerson">
+		update person
+		<set>
+			<if test="name != null">name = #{name},</if>
+			<if test="age != null"> age = #{age} </if>
+		</set>
+		where
+			set_person = #{set_person}
+	</update>
+
+	<update id="updateStudent">
+		update student
+		<set>
+			<if test="stdno != null"> stdno = #{stdno}</if>
+		</set>
+		where
+			seq_person = #{seq_person}
+	</update>
+
+	<update id="updateTeacher">
+		update teacher
+		<set>
+			<if test="major != null"> major = #{major} </if>
+		</set>
+		where
+			seq_person = #{seq_person}
+	</update>
+
+	<update id="updateStaff">
+		update staff
+		<set>
+			<if test="dept != null"> dept = #{dept}</if>
+		</set>
+		where
+			seq_person = #{seq_person}
+	</update>
+
+	<delete id="removeStudent">
+		delete from student where seq_person = #{seq_person}
+	</delete>
+
+	<delete id="removeTeacher">
+		delete from teacher where seq_person = #{seq_person}
+	</delete>
+
+	<delete id="removeStaff">
+		delete from staff where seq_person = #{seq_person}
+	</delete>
+
+	<delete id="removePerson">
+		delete from person where seq_person = #{seq_person}
+	</delete>
+
+
+</mapper>
